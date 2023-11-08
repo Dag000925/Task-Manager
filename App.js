@@ -7,6 +7,12 @@ import MainFile from './src/component/MainFile'
 
 
 export default function App() {
+  const [tasks, setTask] = useState([]);
+
+  const addTask = (title, description, notes) => {
+    const counter = tasks.length;
+    setTask([...tasks, {title, description, notes}]);
+  };
   return (
    <>
     <MainFile />
