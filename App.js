@@ -1,23 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import CreateTask from './components/CreateTask';
+import PromptTask from './components/TaskInfo';
 
 export default function App() {
+  const [tasks, setTask] = useState([]);
+
+  const addTask = (title, description, notes) => {
+    const counter = tasks.length;
+    setTask([...tasks, {title, description, notes}]);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
+        <PromptTask addTask={addTask} />
         <Text style = {styles.sectionTitle}>Tasks</Text>
         <ScrollView>
-          <CreateTask title={'Finish Sprint 1'}/>
-          <CreateTask title={'GUI Assignment 23'}/>
-          <CreateTask title={'C & C++ Programming Assignment'}/>
-          <CreateTask title={'Work out'}/>
-          <CreateTask title={'Stats hw'}/>
-          <CreateTask title={'Assignment E'}/>
-          <CreateTask title={'Lab pack 8'}/>
-          <CreateTask title={'Project Checkpoint 3'}/>
-          <CreateTask title={'Sprint 2'}/>
+          {tasks.map((task, key) => (
+            <CreateTask 
+              key={key} 
+              title={task.title}
+              description={task.description}
+              notes={task.notes}
+            />
+          ))}
         </ScrollView>
       </View>
     </View>
@@ -30,9 +37,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#9370db',
   },
   tasksWrapper: {
-    paddingTop: 80,
+    paddingTop: 40,
     paddingHorizontal: 20,
-    paddingBottom: 50,
+    paddingBottom: 40,
+    flex: 1
   },
   sectionTitle: {
     fontSize: 30,
