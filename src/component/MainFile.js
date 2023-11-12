@@ -2,7 +2,6 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView } from 'react-native';
 import React, { useState } from 'react';
-import Task from '../screen/CreateTask';
 
 
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,16 +10,16 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 import Class from '../screen/Class'
-import CreateTask from '../screen/CreateTask'
+import TaskView from '../screen/TaskView';
 import Event from '../screen/Event'
 import Log from '../screen/Log'
 import Profile from '../screen/Profile'
-//import TaskInfo from '../screen/TaskInfo'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { User } from 'firebase/auth';
+import PromptTask from '../screen/PromptTask';
+// import { onAuthStateChanged } from 'firebase/auth';
+// import { FIREBASE_AUTH } from '../../FirebaseConfig';
+// import { User } from 'firebase/auth';
 
 
 const Drawer = createDrawerNavigator();
@@ -50,21 +49,13 @@ export default function MainFile() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown:false}}>
-                <Stack.Screen name="MainMenu">
-                    {()=>(
-                        <Drawer.Navigator>
-                            <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon:ProfileIcon}}/>
-                            <Drawer.Screen name="Class" component={Class} options={{drawerIcon:ClassIcon}}/>
-                            <Drawer.Screen name="CreateTask" component={CreateTask} options={{drawerIcon:CreateTaskIcon}}/>
-                            <Drawer.Screen name="Event" component={Event} options={{drawerIcon:EventIcon}}/>
-                            <Drawer.Screen name="Log" component={Log} options={{drawerIcon:LogIcon}}/>
-                        </Drawer.Navigator>
-                    )
-
-                    }
-                </Stack.Screen>
-        </Stack.Navigator>
+        <Drawer.Navigator>
+          <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon:ProfileIcon}}/>
+          <Drawer.Screen name="Class" component={Class} options={{drawerIcon:ClassIcon}}/>
+          <Drawer.Screen name="Tasks" component={TaskView} options={{drawerIcon:CreateTaskIcon}}/>
+          <Drawer.Screen name="Event" component={Event} options={{drawerIcon:EventIcon}}/>
+          <Drawer.Screen name="Log" component={Log} options={{drawerIcon:LogIcon}}/>
+        </Drawer.Navigator>
       </NavigationContainer>
     </View>
 
