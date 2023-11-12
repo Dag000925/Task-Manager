@@ -15,12 +15,8 @@ const PromptTask = ({ addTask }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [inputs, setInputs] = useState({
-    title: "Title",
-    description: "Description",
-    notes: "Notes",
     // category: placeholders.category,
     // dueDate: other,
-    // priority: placeholders.priority
   });
 
   const set = (name, text) => {

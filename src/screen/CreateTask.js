@@ -4,10 +4,14 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal, Scr
 export default CreateTask = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
-    const title = props.title;
-    const description = props.description;
-    const notes = props.notes;
-    // const category = props.category;
+    //change the task style based on its priority
+    let priority = styles.item;
+    if (props.priority == 'high')
+        priority = styles.highPriorityItem
+    else if (props.priority == 'medium')
+        priority = styles.mediumPriorityItem
+    else if (props.priority == 'low')
+        priority = styles.lowPriorityItem
     // const completed = props.completed;
     return (
         <View>
@@ -19,9 +23,15 @@ export default CreateTask = (props) => {
                 onRequestClose={() => {setModalVisible(!modalVisible);}}
             >
                 <View style={styles.modalView}>
-                    <Text>{props.title}</Text>
-                    <Text>{props.description}</Text>
+                    <Text style={styles.taskCategory}>{props.category}</Text>
+                    <Text style={styles.taskTitle}>{props.title}</Text>
+                    <Text style={styles.taskDescription}>{props.description}</Text>
                     <Text>{props.notes}</Text>
+                    {/* <Text>
+                        Due Date: {props.dueDate}
+                        Time Remaining: {props.dueDate - (new Date())}
+                    </Text>
+                    {/* categories.push() */}
                     <Button 
                         title='Close'
                         onPress={() => setModalVisible(!modalVisible)}
@@ -29,7 +39,7 @@ export default CreateTask = (props) => {
                 </View>
             </Modal>
             <TouchableOpacity 
-                style={styles.highPriorityItem} 
+                style={priority} 
                 onPress={() => setModalVisible(true)}
             >
                 <Text style={styles.itemText}>{props.title}</Text>
@@ -85,7 +95,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     item: {
-        backgroundColor: '#818080',
+        backgroundColor: '#808080',
         padding: 20,
         alignItems: 'center',
         marginTop: 15,
@@ -95,4 +105,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontWeight: 'bold',
     },
+    taskCategory: {
+        fontSize: 24,
+    },
+    taskTitle: {
+        fontSize: 28,
+        textAlign: 'center'
+    },
+    taskDescription: {
+        textAlign: 'left',
+        justifyContent: 'flex-start'
+    }
 })
