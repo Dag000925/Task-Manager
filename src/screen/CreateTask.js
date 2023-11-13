@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal, ScrollView } from 'react-native';
 
+/*TODO 
+    Fix modal styles
+    Due date
+    Editing
+*/
+
 export default CreateTask = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -12,7 +18,6 @@ export default CreateTask = (props) => {
         priority = styles.mediumPriorityItem
     else if (props.priority == 'low')
         priority = styles.lowPriorityItem
-    // const completed = props.completed;
     return (
         <View>
             <Modal
@@ -30,8 +35,7 @@ export default CreateTask = (props) => {
                     {/* <Text>
                         Due Date: {props.dueDate}
                         Time Remaining: {props.dueDate - (new Date())}
-                    </Text>
-                    {/* categories.push() */}
+                    </Text> */}
                     <Button 
                         title='Close'
                         onPress={() => setModalVisible(!modalVisible)}
