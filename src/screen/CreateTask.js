@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal, ScrollView } from 'react-native';
 
-const CreateTask = (props) => {
-    //const [properties, setProps] = useState();
+/*TODO 
+    Fix modal styles
+    Due date
+    Editing
+*/
+
+export default CreateTask = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
-    const title = props.title;
-    const description = props.description;
-    const notes = props.notes;
-    // const category = props.category;
-    // const completed = props.completed;
+    //change the task style based on its priority
+    let priority = styles.item;
+    if (props.priority == 'high')
+        priority = styles.highPriorityItem
+    else if (props.priority == 'medium')
+        priority = styles.mediumPriorityItem
+    else if (props.priority == 'low')
+        priority = styles.lowPriorityItem
     return (
         <View>
             <Modal
@@ -20,9 +28,14 @@ const CreateTask = (props) => {
                 onRequestClose={() => {setModalVisible(!modalVisible);}}
             >
                 <View style={styles.modalView}>
-                    <Text>{props.title}</Text>
-                    <Text>{props.description}</Text>
+                    <Text style={styles.taskCategory}>{props.category}</Text>
+                    <Text style={styles.taskTitle}>{props.title}</Text>
+                    <Text style={styles.taskDescription}>{props.description}</Text>
                     <Text>{props.notes}</Text>
+                    {/* <Text>
+                        Due Date: {props.dueDate}
+                        Time Remaining: {props.dueDate - (new Date())}
+                    </Text> */}
                     <Button 
                         title='Close'
                         onPress={() => setModalVisible(!modalVisible)}
@@ -30,7 +43,7 @@ const CreateTask = (props) => {
                 </View>
             </Modal>
             <TouchableOpacity 
-                style={styles.highPriorityItem} 
+                style={priority} 
                 onPress={() => setModalVisible(true)}
             >
                 <Text style={styles.itemText}>{props.title}</Text>
@@ -86,7 +99,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     item: {
-        backgroundColor: '#818080',
+        backgroundColor: '#808080',
         padding: 20,
         alignItems: 'center',
         marginTop: 15,
@@ -96,6 +109,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontWeight: 'bold',
     },
+    taskCategory: {
+        fontSize: 24,
+    },
+    taskTitle: {
+        fontSize: 28,
+        textAlign: 'center'
+    },
+    taskDescription: {
+        textAlign: 'left',
+        justifyContent: 'flex-start'
+    }
 })
-
-export default CreateTask;
