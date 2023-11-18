@@ -1,71 +1,48 @@
-//import React, { useState } from 'react';
-//import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal } from 'react-native';
-//import PromptTask from './TaskInfo';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Modal, ScrollView } from 'react-native';
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-const CreateTask = (props) => {
-    return (
-        <View style = {styles.item}>
-            <Text style={styles.itemText}>{props.text}</Text>
-        </View>
-    )
-}
-
-const styles = StyleSheet.create({
-    item: {
-        backgroundColor: '#dc143c',
-        padding: 20,
-        alignItems: 'center',
-        marginTop: 50,
-        borderRadius: 15,
-    },
-    itemText: {
-        fontWeight: 'bold',
-    }
-})
-
-export default CreateTask;
-
-
-/* const Task = () => {
-  const [tasks, setTask] = useState([]);
-
-  const addTask = (title, description, notes) => {
-    const counter = tasks.length;
-    setTask([...tasks, {title, description, notes}]);
-  };
-  return (
-    <View style={styles.container}>
-      <View style={styles.tasksWrapper}>
-        <PromptTask addTask={addTask} />
-        <Text style = {styles.sectionTitle}>Tasks</Text>
-        <ScrollView>
-          {tasks.map((task, key) => (
-            <CreateTask 
-              key={key} 
-              title={task.title}
-              description={task.description}
-              notes={task.notes}
-            />
-          ))}
-        </ScrollView>
-      </View>
-      <MainFile />
-    </View>
-  );
-}
-
-/* const CreateTask = (props) => {
-    //const [properties, setProps] = useState();
+export default CreateTask = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
-    const title = props.title;
-    const description = props.description;
-    const notes = props.notes;
-    // const category = props.category;
-    // const completed = props.completed;
+    //change the task style based on its priority
+    let priority = styles.item;
+    if (props.priority == 'high')
+        priority = styles.highPriorityItem
+    else if (props.priority == 'medium')
+        priority = styles.mediumPriorityItem
+    else if (props.priority == 'low')
+        priority = styles.lowPriorityItem
+
+    //convert and parse due date
+    const due = new Date(props.dueDate);
+    //for filtering
+    props.dueDate = due;
+    
+    //FIXME 
+    //formats a date object into a string without seconds and timezone
+    const format = (date) => {
+        dtString = date.toDateString() + ", ";
+        dtString += (date.getHours() % 12) + 1;
+        dtString += ":" + date.getMinutes();
+        dtString += (date.getHours() > 11 ? "PM" : "AM");
+        return dtString;
+    }
+
+    //format string for time remaining/overdue of task
+    const difference = (time) => {
+        days = Math.abs(Math.floor(time / (1000 * 60 * 60 * 24)));
+        hours = Math.abs(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        minutes = Math.abs(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+        ret = (time > 0 ? "Time Remaining: " : "Overdue: ");
+        ret += (days > 0 ? days + " day(s) " : "");
+        ret += (hours > 0 ? hours + " hour(s) " : "");
+        ret += (minutes > 0 ? minutes + " minute(s)" : "");
+        return ret;
+    }
+    
+    //TODO - NOT YET IMPLEMENTED
+    //save current for  cancelling edits
+    const saveProps = props;
     return (
         <View>
             <Modal
@@ -76,9 +53,12 @@ export default CreateTask;
                 onRequestClose={() => {setModalVisible(!modalVisible);}}
             >
                 <View style={styles.modalView}>
-                    <Text>{props.title}</Text>
-                    <Text>{props.description}</Text>
+                    <Text style={styles.taskCategory}>{props.category}</Text>
+                    <Text style={styles.taskTitle}>{props.title}</Text>
+                    <Text style={styles.taskDescription}>{props.description}</Text>
                     <Text>{props.notes}</Text>
+                    <Text>Due Date: {format(due)}</Text>
+                    <Text>{difference(due - new Date())}</Text>
                     <Button 
                         title='Close'
                         onPress={() => setModalVisible(!modalVisible)}
@@ -86,15 +66,15 @@ export default CreateTask;
                 </View>
             </Modal>
             <TouchableOpacity 
-                style={styles.highPriorityItem} 
+                style={priority} 
                 onPress={() => setModalVisible(true)}
             >
                 <Text style={styles.itemText}>{props.title}</Text>
             </TouchableOpacity>
         </View>
     )
-} */
-/*
+}
+
 const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
@@ -142,7 +122,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     item: {
-        backgroundColor: '#818080',
+        backgroundColor: '#808080',
         padding: 20,
         alignItems: 'center',
         marginTop: 15,
@@ -152,7 +132,15 @@ const styles = StyleSheet.create({
     itemText: {
         fontWeight: 'bold',
     },
+    taskCategory: {
+        fontSize: 24,
+    },
+    taskTitle: {
+        fontSize: 28,
+        textAlign: 'center'
+    },
+    taskDescription: {
+        textAlign: 'left',
+        justifyContent: 'flex-start'
+    }
 })
-
-export default Task;
-*/
