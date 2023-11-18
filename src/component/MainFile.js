@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
-import Class from '../screen/Class'
+import Course from '../screen/Course'
 import TaskView from '../screen/TaskView';
 import Event from '../screen/Event'
 import Log from '../screen/Log'
@@ -26,7 +26,7 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const ProfileIcon = ({focused, color, size}) => <Ionicons name='md-body' size={size} color={color} />
-const ClassIcon = ({focused, color, size}) => <Ionicons name='md-documents' size={size} color={color} />
+const CourseIcon = ({focused, color, size}) => <Ionicons name='md-documents' size={size} color={color} />
 const CreateTaskIcon = ({focused, color, size}) => <Ionicons name='md-calendar' size={size} color={color} />
 const EventIcon = ({focused, color, size}) => <Ionicons name='md-bulb' size={size} color={color} />
 const LogIcon = ({focused, color, size}) => <Ionicons name='md-log-in' size={size} color={color} />
@@ -51,7 +51,7 @@ export default function MainFile() {
       <NavigationContainer>
         <Drawer.Navigator>
           <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon:ProfileIcon}}/>
-          <Drawer.Screen name="Class" component={Class} options={{drawerIcon:ClassIcon}}/>
+          <Drawer.Screen name="Course" component={Course} options={{drawerIcon:CourseIcon}}/>
           <Drawer.Screen name="Tasks" component={TaskView} options={{drawerIcon:CreateTaskIcon}}/>
           <Drawer.Screen name="Event" component={Event} options={{drawerIcon:EventIcon}}/>
           <Drawer.Screen name="Log" component={Log} options={{drawerIcon:LogIcon}}/>

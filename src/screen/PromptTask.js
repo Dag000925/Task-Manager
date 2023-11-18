@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Modal } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { categories } from './Course';
 
 const priorities = [
   { label: 'High', value: 'high' },
@@ -8,21 +10,12 @@ const priorities = [
   { label: 'Low', value: 'low' },
 ]
 
-const categories = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-  { label: 'Item 5', value: '5' },
-  { label: 'Item 6', value: '6' },
-  { label: 'Item 7', value: '7' },
-  { label: 'Item 8', value: '8' },
-];
-
 const PromptTask = ({ addTask }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({
+    'dueDate': new Date()
+  });
 
   const set = (name, text) => {
     setInputs({
@@ -31,8 +24,17 @@ const PromptTask = ({ addTask }) => {
     });
   };
 
+  const [date, setDate] = useState(new Date());
+
+  const onChange = (event, date) => {
+    setDate(date);
+    set('dueDate', date);
+  }
+
   const reset = () => {
-    setInputs({});
+    now = new Date();
+    setInputs({'dueDate': now});
+    setDate(now);
   }
 
   return (
@@ -48,29 +50,22 @@ const PromptTask = ({ addTask }) => {
           <TextInput
             style={styles.textStyle}
             placeholder="Title"
-            numberOfLines={1}
-            clearTextOnFocus={true}
             onChangeText={(text) => set('title', text)}
           />
           <TextInput
             style={styles.textStyle}
             placeholder="Description"
-            numberOfLines={3}
-            clearTextOnFocus={true}
             onChangeText={(text) => set('description', text)}
           />
           <TextInput
             style={styles.textStyle}
             placeholder="Notes"
-            numberOfLines={5}
-            clearTextOnFocus={true}
             onChangeText={(text) => set('notes', text)}
           />
           <View style={{width: '75%'}}>
             <Dropdown 
               style={styles.dropdown}
               data={priorities}
-              //search
               labelField="label"
               valueField="value"
               placeholder={'Select priority'}
@@ -85,10 +80,10 @@ const PromptTask = ({ addTask }) => {
             <Dropdown 
               style={styles.dropdown}
               data={categories}
-              search
+              search={categories.length}
               labelField="label"
               valueField="value"
-              placeholder={'Select category'}
+              placeholder={categories.length ? 'Select course' : 'No courses'}
               searchPlaceholder="Search..."
               maxHeight={300}
               onChange={item => {
@@ -96,6 +91,11 @@ const PromptTask = ({ addTask }) => {
               }}
             />
           </View>
+          <DateTimePicker
+            value={date}
+            mode='datetime'
+            onChange={onChange}
+          />
           <Button
             style={[styles.button, styles.buttonClose]}
             title='Create'
@@ -107,7 +107,8 @@ const PromptTask = ({ addTask }) => {
                 inputs.description, 
                 inputs.notes, 
                 inputs.priority,
-                inputs.category
+                inputs.category,
+                inputs.dueDate.valueOf()
               );
               setModalVisible(!modalVisible);
               reset();
@@ -122,7 +123,7 @@ const PromptTask = ({ addTask }) => {
       </Modal>
       <Button
         title="Create Task"
-        onPress={() => setModalVisible(true)}
+        onPress={() => {setModalVisible(true); reset();}}
       />
     </View>
   )

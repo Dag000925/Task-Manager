@@ -6,8 +6,8 @@ import CreateTask from './CreateTask';
 export default function TaskView() {
   const [tasks, setTask] = useState([]);
 
-  const addTask = (title, description, notes, priority, category) => {
-    setTask([...tasks, { title, description, notes, priority, category }]);
+  const addTask = (title, description, notes, priority, category, dueDate) => {
+    setTask([...tasks, { title, description, notes, priority, category, dueDate }]);
   };
   return (
     <View style={styles.container}>
@@ -22,6 +22,7 @@ export default function TaskView() {
               notes={task.notes}
               priority={task.priority}
               category={task.category}
+              dueDate={task.dueDate}
             />
           ))}
         </ScrollView>
