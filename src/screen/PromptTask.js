@@ -102,6 +102,8 @@ const PromptTask = ({ addTask }) => {
             onPress={() => {
               if(!inputs.title)
                 inputs.title = "Untitled Task";
+              if(!inputs.priority)
+                inputs.priority = "none"
               addTask(
                 inputs.title, 
                 inputs.description, 

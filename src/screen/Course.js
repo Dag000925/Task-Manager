@@ -2,14 +2,19 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button, ScrollView, Modal } from 'react-native';
 import React, { useState } from 'react';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 
-export var categories = [];
+export var categories = [
+  {'label': 'None', 'value': 'None'}
+];
 
 //TODO - prompt for more details and customize course colors
 const PromptCourse = ({ addCourse }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [inputs, setInputs] = useState({});
+  // const [startTime, setStart] = useState(new Date('12:00'));
+  // const [endTime, setEnd] = useState(new Date('0:00'));
 
   const set = (name, text) => {
     setInputs({
@@ -41,7 +46,17 @@ const PromptCourse = ({ addCourse }) => {
             style={styles.textStyle}
             placeholder="Professor"
             onChangeText={(text) => set('professor', text)}
-          /> */}
+          />
+          <DateTimePicker
+            value={startTime}
+            mode='time'
+            onChange={setStart}
+          />
+          <DateTimePicker
+            value={endTime}
+            mode='time'
+            onChange={setEnd}
+  /> */}
           <Button
             style={[styles.button, styles.buttonClose]}
             title='Add'
@@ -95,7 +110,7 @@ const CreateCourse = (props) => {
         style={styles.course}
         onPress={() => setModalVisible(true)}
       >
-        <Text>{props.title}</Text>
+          <Text>{props.title}</Text>
       </TouchableOpacity>
     </View>
   )
