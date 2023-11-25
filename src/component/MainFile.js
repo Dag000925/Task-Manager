@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
@@ -14,6 +14,7 @@ import TaskView from '../screen/TaskView';
 import Event from '../screen/Event'
 import Log from '../screen/Log'
 import Profile from '../screen/Profile'
+import LogOut from '../screen/LogOut'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import PromptTask from '../screen/PromptTask';
@@ -31,36 +32,42 @@ const CreateTaskIcon = ({focused, color, size}) => <Ionicons name='md-calendar' 
 const EventIcon = ({focused, color, size}) => <Ionicons name='md-bulb' size={size} color={color} />
 const LogIcon = ({focused, color, size}) => <Ionicons name='md-log-in' size={size} color={color} />
 
-export default function MainFile() {
+const AuthStack = createStackNavigator();
+const MainStack = createStackNavigator();
 
-  /* const [user, setUser] = useState<User | null>(null);
-  const [initialRouteName, setInitialRouteName] = useState('Log');
+const DrawerNavigator = () => {
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log('user', user);
-      setUser(user);
-      if (user) {
-        // User is logged in, so change the initial route to 'MainMenu'
-        setInitialRouteName('MainMenu');
-      }
-    });
-  }, []); */
   return (
-    <View style={styles.container}>
-      <NavigationContainer>
-        <Drawer.Navigator>
-          <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon:ProfileIcon}}/>
-          <Drawer.Screen name="Course" component={Course} options={{drawerIcon:CourseIcon}}/>
-          <Drawer.Screen name="Tasks" component={TaskView} options={{drawerIcon:CreateTaskIcon}}/>
-          <Drawer.Screen name="Event" component={Event} options={{drawerIcon:EventIcon}}/>
-          <Drawer.Screen name="Log" component={Log} options={{drawerIcon:LogIcon}}/>
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </View>
-
+    <Drawer.Navigator initialRouteName="Profile">
+      <Drawer.Screen
+        name="Profile"
+        component={Profile}
+        options={{ drawerIcon: ProfileIcon }}
+      />
+      <Drawer.Screen
+        name="Course"
+        component={Course}
+        options={{ drawerIcon: CourseIcon }}
+      />
+      <Drawer.Screen
+        name="Tasks"
+        component={TaskView}
+        options={{ drawerIcon: CreateTaskIcon }}
+      />
+      <Drawer.Screen
+        name="Event"
+        component={Event}
+        options={{ drawerIcon: EventIcon }}
+      />
+      <Drawer.Screen
+        name="Log Out"
+        component={()=> <LogOut navigation={navigation}/>}
+        options={{ drawerIcon: LogIcon }}
+      />
+    </Drawer.Navigator>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -77,3 +84,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   }
 });
+
+export default DrawerNavigator;

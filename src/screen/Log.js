@@ -1,25 +1,43 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView, TextInput, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 
 
-const Log = () =>{
+const Log = ({ setUserLoggedIn }) =>{
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // was false
   const auth = FIREBASE_AUTH; 
 
+  const navigation = useNavigation();
+
+  // changes from here
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setLoading(false);
+      if (user) {
+        setUserLoggedIn(true);
+        navigation.navigate('Profile');
+      }
+  });
+  return () => unsubscribe();
+},[navigation, setUserLoggedIn]);
+
+// 
   const signIn = async ()=> {
     setLoading(true);
     try{
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
+      setUserLoggedIn(true);
+      navigation.navigate('Profile');
     } catch (error) {
       console.log(error);
-      alert('Registration Failed: ' + error.message);
+      alert('Login Failed: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -30,7 +48,9 @@ const Log = () =>{
     try{
       const response = await createUserWithEmailAndPassword(auth, email, password);
       console.log(response);
-      alert('Check Registered Email');
+      alert('Registeration Successful');
+      setUserLoggedIn(true);
+      navigation.navigate('Profile');
     } catch (error){
       console.log(error);
       alert('Sign in Failed: ' + error.message);
