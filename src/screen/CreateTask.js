@@ -5,13 +5,13 @@ export default CreateTask = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     //change the task style based on its priority
-    let priority = styles.item;
+    let priority = [styles.item, styles.noPriorityItem];
     if (props.priority == 'high')
-        priority = styles.highPriorityItem
+        priority = [styles.item, styles.highPriorityItem];
     else if (props.priority == 'medium')
-        priority = styles.mediumPriorityItem
+        priority = [styles.item, styles.mediumPriorityItem];
     else if (props.priority == 'low')
-        priority = styles.lowPriorityItem
+        priority = [styles.item, styles.lowPriorityItem];
 
     //convert and parse due date
     const due = new Date(props.dueDate);
@@ -97,38 +97,25 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
       },
-    highPriorityItem: {
+      highPriorityItem: {
         backgroundColor: '#dc143c',
-        padding: 20,
-        alignItems: 'center',
-        marginTop: 15,
-        marginBottom: 15,
-        borderRadius: 15,
-    },
-    mediumPriorityItem: {
+      },
+      mediumPriorityItem: {
         backgroundColor: '#f69709',
-        padding: 20,
-        alignItems: 'center',
-        marginTop: 15,
-        marginBottom: 15,
-        borderRadius: 15,
-    },
-    lowPriorityItem: {
+      },
+      lowPriorityItem: {
         backgroundColor: '#2eb82e',
+      },
+      noPriorityItem: {
+        backgroundColor: '#818080',
+      },
+      item: {
         padding: 20,
         alignItems: 'center',
         marginTop: 15,
         marginBottom: 15,
         borderRadius: 15,
-    },
-    item: {
-        backgroundColor: '#808080',
-        padding: 20,
-        alignItems: 'center',
-        marginTop: 15,
-        marginBottom: 15,
-        borderRadius: 15,
-    },
+      },
     itemText: {
         fontWeight: 'bold',
     },

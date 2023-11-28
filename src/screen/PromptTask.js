@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { categories } from './Course';
 
 const priorities = [
+  { label: 'None', value: 'none' },
   { label: 'High', value: 'high' },
   { label: 'Medium', value: 'medium' },
   { label: 'Low', value: 'low' },
@@ -102,6 +103,8 @@ const PromptTask = ({ addTask }) => {
             onPress={() => {
               if(!inputs.title)
                 inputs.title = "Untitled Task";
+              if(!inputs.priority)
+                inputs.priority = "none"
               addTask(
                 inputs.title, 
                 inputs.description, 
