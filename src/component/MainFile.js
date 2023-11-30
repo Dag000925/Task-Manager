@@ -18,6 +18,7 @@ import LogOut from '../screen/LogOut'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import PromptTask from '../screen/PromptTask';
+import SignUpScreen from '../screen/SignUpScreen';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { FIREBASE_AUTH } from '../../FirebaseConfig';
 // import { User } from 'firebase/auth';
@@ -32,8 +33,9 @@ const CreateTaskIcon = ({focused, color, size}) => <Ionicons name='md-calendar' 
 const EventIcon = ({focused, color, size}) => <Ionicons name='md-bulb' size={size} color={color} />
 const LogIcon = ({focused, color, size}) => <Ionicons name='md-log-in' size={size} color={color} />
 
-const AuthStack = createStackNavigator();
+//const AuthStack = createStackNavigator();
 const MainStack = createStackNavigator();
+
 
 const DrawerNavigator = () => {
   const navigation = useNavigation();
@@ -63,7 +65,8 @@ const DrawerNavigator = () => {
       <Drawer.Screen
         name="Log Out"
         component={()=> <LogOut navigation={navigation}/>}
-        options={{ drawerIcon: LogIcon }}
+        options={{ drawerIcon: LogIcon, headerShown: false }}
+        
       />
     </Drawer.Navigator>
   );

@@ -1,11 +1,12 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView, TextInput, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView, TextInput, KeyboardAvoidingView, ActivityIndicator, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
+const logImg = require("../../assets/log.jpg");
 
 const Log = ({ setUserLoggedIn }) =>{
   const [email, setEmail] = useState('');
@@ -14,6 +15,8 @@ const Log = ({ setUserLoggedIn }) =>{
   const auth = FIREBASE_AUTH; 
 
   const navigation = useNavigation();
+
+  console.log('setUserLoggedIn type:', typeof setUserLoggedIn);
 
   // changes from here
   useEffect(() => {
@@ -61,6 +64,7 @@ const Log = ({ setUserLoggedIn }) =>{
 
   return (
     <View style={styles.container}>
+      <Image source={logImg} style={styles.imageStyle}/>
       <View style={styles.centeredContent}>
         <KeyboardAvoidingView behavior="padding">
         <TextInput value={email} style={styles.input} placeholder='Email' autoCapitalize='none'
@@ -73,8 +77,12 @@ const Log = ({ setUserLoggedIn }) =>{
       { loading ? (<ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <> 
-        <Button title="Login" onPress={signIn}/>
-        <Button title="Create Account" onPress={signUp}/>
+        <View>
+          <Button title="Login" onPress={signIn}/>
+        </View>
+        <View>
+          <Button title="Create Account" onPress={() => navigation.navigate('SignUp')}/>
+        </View>
         </>
       )}
       </KeyboardAvoidingView>
@@ -92,12 +100,36 @@ const styles = StyleSheet.create({
   },
   centeredContent: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 250,
     alignItems: 'center',
+    
   },
-  message: {
-    fontSize: 25,
+  imageStyle: {
+    width: 400,
+    height: 200,
+    //resizeMode: 'contain',
+    //paddingBottom: 150,
+    position: 'absolute',
+    top: 220,
+    
   },
+  input: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingLeft: 15,
+    width: '80%',
+  },
+  buttonContainer: {
+    marginTop: 10,
+    width: '80%',
+    borderRadius: 5,
+  },
+  
+  
 });
 
 export default Log;
