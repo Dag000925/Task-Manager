@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { SearchBar } from 'react-native-elements';
 
 
 export default function Event() {
@@ -70,13 +70,12 @@ export default function Event() {
   return (
     <View style={styles.container}>
       {/* Search Bar */}
-      <TextInput
-        style={styles.searchBar}
+      <SearchBar
         placeholder="Find Event"
-        placeholderTextColor = "grey"
-        fontSize={18}
+        placeholderTextColor="grey"
         onChangeText={(text) => setSearchText(text)}
         value={searchText}
+        containerStyle={styles.searchBarContainer} 
       />
       {/* Create Event Button */}
       <TouchableOpacity
@@ -116,6 +115,9 @@ export default function Event() {
             onChangeText={(text) => handleInputChange('notes', text)}
           />
           {/* Date Picker */}
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.datePickerText}>Select Date</Text>
+          </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
               value={eventInfo.dueDate}
@@ -217,10 +219,12 @@ const styles = StyleSheet.create({
   },
   createEventButtonText: {
     color: '#2196F3',
+    fontSize: 18,
     fontWeight: 'bold',
   },
   datePickerText: {
-    fontSize: 16,
+    fontSize: 17,
+    color: '#2196F3',
     marginTop: 10,
     marginBottom: 20,
   },
@@ -236,14 +240,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10, 
   },
-  searchBar: {
-    height: 50,
+  searchBarContainer: {
+    height: 60,
     width: '100%',
-    borderColor: '#2e2c2c',
-    borderWidth: 10,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#262524', 
-    color: 'black', 
+    backgroundColor: '#262524',
+    borderTopWidth: 0,
   },
 });
