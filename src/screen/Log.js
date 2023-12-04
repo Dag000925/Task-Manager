@@ -46,7 +46,7 @@ const Log = ({ setUserLoggedIn }) =>{
     }
   }
 
-  const signUp = async () =>{
+  /* const signUp = async () =>{
     setLoading(true);
     try{
       const response = await createUserWithEmailAndPassword(auth, email, password);
@@ -60,11 +60,12 @@ const Log = ({ setUserLoggedIn }) =>{
     } finally {
       setLoading(false);
     }
-  }
+  } */
 
   return (
     <View style={styles.container}>
       <Image source={logImg} style={styles.imageStyle}/>
+        <Text style={styles.overlayText}>Task Manager</Text>
       <View style={styles.centeredContent}>
         <KeyboardAvoidingView behavior="padding">
         <TextInput value={email} style={styles.input} placeholder='Email' autoCapitalize='none'
@@ -80,8 +81,11 @@ const Log = ({ setUserLoggedIn }) =>{
         <View>
           <Button title="Login" onPress={signIn}/>
         </View>
-        <View>
-          <Button title="Create Account" onPress={() => navigation.navigate('SignUp')}/>
+        <View style={styles.accountPromptContainer}>
+          <Text style={styles.accountPromptText}>Don't have an account?</Text>
+          <View style={styles.buttonContainer}>
+            <Button title="Register Here" onPress={() => navigation.navigate('SignUp')}/>
+          </View>
         </View>
         </>
       )}
@@ -92,42 +96,73 @@ const Log = ({ setUserLoggedIn }) =>{
 }
 
 const styles = StyleSheet.create({
+  // overall container style
   container: {
     flex: 1,
     backgroundColor: '#9370db',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // content style
   centeredContent: {
     flex: 1,
     justifyContent: 'flex-end',
-    paddingBottom: 250,
+    paddingBottom: 200,
     alignItems: 'center',
     
   },
+  // image positioning, height, width
   imageStyle: {
     width: 400,
     height: 200,
-    //resizeMode: 'contain',
-    //paddingBottom: 150,
     position: 'absolute',
-    top: 220,
+    top: 270,
     
   },
+  // input field style
   input: {
     height: 50,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 15,
+    marginTop: 15,
     paddingLeft: 15,
-    width: '80%',
+    width: 300,
+    backgroundColor: 'white',
+    
   },
   buttonContainer: {
-    marginTop: 10,
+    top: 20,
     width: '80%',
     borderRadius: 5,
+    position: 'absolute',
+    //justifyContent: 'flex-start',
+    left: 100,
+
   },
+  // text style
+  overlayText: {
+    color: 'white', 
+    fontSize: 48, 
+    fontWeight: 'bold',
+    top: 200,
+    fontFamily: 'Arial',
+  },
+  accountPromptText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontFamily: 'Arial',
+    left: 136,
+    fontSize: 17,
+
+  },
+  accountPromptContainer: {
+    marginTop: 40,
+    alignItems: 'center',
+    width: '100%',
+  },
+  
+  
   
   
 });
