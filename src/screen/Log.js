@@ -24,7 +24,6 @@ const Log = ({ setUserLoggedIn }) =>{
       setLoading(false);
       if (user) {
         setUserLoggedIn(true);
-        navigation.navigate('Profile');
       }
   });
   return () => unsubscribe();
@@ -32,12 +31,11 @@ const Log = ({ setUserLoggedIn }) =>{
 
 // 
   const signIn = async ()=> {
-    setLoading(true);
+    //setLoading(true);
     try{
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
       setUserLoggedIn(true);
-      navigation.navigate('Profile');
     } catch (error) {
       console.log(error);
       alert('Login Failed: ' + error.message);
@@ -45,22 +43,6 @@ const Log = ({ setUserLoggedIn }) =>{
       setLoading(false);
     }
   }
-
-  /* const signUp = async () =>{
-    setLoading(true);
-    try{
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      alert('Registeration Successful');
-      setUserLoggedIn(true);
-      navigation.navigate('Profile');
-    } catch (error){
-      console.log(error);
-      alert('Sign in Failed: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  } */
 
   return (
     <View style={styles.container}>

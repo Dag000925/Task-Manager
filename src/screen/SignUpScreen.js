@@ -39,7 +39,7 @@ const SignUpScreen = ({ navigation, setUserLoggedIn }) => {
             setUserLoggedIn(true); */
             
 
-            navigation.navigate('Profile');
+            //navigation.navigate('Profile');
           } catch (error){
             console.log(error);
             alert('Sign up Failed: ' + error.message);
@@ -51,7 +51,7 @@ const SignUpScreen = ({ navigation, setUserLoggedIn }) => {
 return (
     <View style={styles.container}>
       <Image source={regImg} style={styles.imageStyle}/>
-      <Text style={styles.overlayText}>Registeration</Text>
+      <Text style={styles.overlayText}>Registration</Text>
       <KeyboardAvoidingView behavior="padding">
         <TextInput
           value={email}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import DrawerNavigator from './src/component/MainFile';
-import AuthNavigator from './src/component/MainFile';
 
 import Log from './src/screen/Log';
 import SignUpScreen from './src/screen/SignUpScreen';
@@ -21,12 +20,15 @@ const App = () => {
       </AuthStack.Screen>
     </AuthStack.Navigator>
   );
+  const handleLogout = () => {
+    setUserLoggedIn(false);
+  };
 
   return (
     <View style={styles.container}>
       <NavigationContainer>
         {userLoggedIn ? (
-          <DrawerNavigator />
+          <DrawerNavigator onLogout={handleLogout}/>
         ) : (
           <AuthNavigator />
         )}
@@ -38,7 +40,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // Set the background color as needed
+    backgroundColor: '#fff',
   },
 });
 

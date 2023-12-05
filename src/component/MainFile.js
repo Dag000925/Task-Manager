@@ -3,29 +3,23 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, Button, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 
-
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 import Course from '../screen/Course'
 import TaskView from '../screen/TaskView';
 import Event from '../screen/Event'
-import Log from '../screen/Log'
+
 import Profile from '../screen/Profile'
 import LogOut from '../screen/LogOut'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import PromptTask from '../screen/PromptTask';
-import SignUpScreen from '../screen/SignUpScreen';
-// import { onAuthStateChanged } from 'firebase/auth';
-// import { FIREBASE_AUTH } from '../../FirebaseConfig';
-// import { User } from 'firebase/auth';
+
 
 
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+
 
 const ProfileIcon = ({focused, color, size}) => <Ionicons name='md-body' size={size} color={color} />
 const CourseIcon = ({focused, color, size}) => <Ionicons name='md-documents' size={size} color={color} />
@@ -33,11 +27,12 @@ const CreateTaskIcon = ({focused, color, size}) => <Ionicons name='md-calendar' 
 const EventIcon = ({focused, color, size}) => <Ionicons name='md-bulb' size={size} color={color} />
 const LogIcon = ({focused, color, size}) => <Ionicons name='md-log-in' size={size} color={color} />
 
-//const AuthStack = createStackNavigator();
-const MainStack = createStackNavigator();
-
-
-const DrawerNavigator = () => {
+const CustomDrawerLabel = ({ label }) => (
+  <Text style={{ fontFamily: 'Arial', fontSize: 16 }}>
+    {label}
+  </Text>
+);
+const DrawerNavigator = ({ onLogout }) => {
   const navigation = useNavigation();
 
   return (
@@ -45,28 +40,32 @@ const DrawerNavigator = () => {
       <Drawer.Screen
         name="Profile"
         component={Profile}
-        options={{ drawerIcon: ProfileIcon }}
+        options={{ drawerIcon: ProfileIcon,
+          drawerLabel: () => <CustomDrawerLabel label="Profile" />}}
       />
       <Drawer.Screen
         name="Course"
         component={Course}
-        options={{ drawerIcon: CourseIcon }}
+        options={{ drawerIcon: CourseIcon,
+          drawerLabel: () => <CustomDrawerLabel label="Course" /> }}
       />
       <Drawer.Screen
         name="Tasks"
         component={TaskView}
-        options={{ drawerIcon: CreateTaskIcon }}
+        options={{ drawerIcon: CreateTaskIcon,
+          drawerLabel: () => <CustomDrawerLabel label="Tasks" /> }}
       />
       <Drawer.Screen
         name="Event"
         component={Event}
-        options={{ drawerIcon: EventIcon }}
+        options={{ drawerIcon: EventIcon,
+          drawerLabel: () => <CustomDrawerLabel label="Event" /> }}
       />
       <Drawer.Screen
         name="Log Out"
-        component={()=> <LogOut navigation={navigation}/>}
-        options={{ drawerIcon: LogIcon, headerShown: false }}
-        
+        component={()=> <LogOut onLogout={onLogout}/>}
+        options={{ drawerIcon: LogIcon, headerShown: false,
+          drawerLabel: () => <CustomDrawerLabel label="Log Out" /> }}
       />
     </Drawer.Navigator>
   );

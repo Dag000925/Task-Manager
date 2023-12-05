@@ -6,8 +6,6 @@ import { FIREBASE_AUTH, FIREBASE_STORAGE, FIRESTORE_DB } from '../../FirebaseCon
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { updateProfile } from 'firebase/auth';
 import userPlaceholder from '../../assets/user.png';
 
 
@@ -50,12 +48,9 @@ export default function Profile() {
       aspect: [4, 3],
       quality: 1,
     });
-
+    
     console.log(result);
 
-    /* if (!result.canceled){
-      uploadImage(result.uri);
-    } */
     if (!result.canceled){
       uploadMedia(result.assets[0].uri);
     }
@@ -69,7 +64,7 @@ export default function Profile() {
       await updateDoc(userRef, {
         photoURL: url,
       });
-      setImage(url); // Update the local state to reflect the new profile image
+      setImage(url); 
     } catch (error) {
       console.error('Error updating profile picture:', error);
     }
@@ -118,8 +113,11 @@ export default function Profile() {
         <Text style={styles.emailAndText}>Email: {email}</Text>
         <View style={styles.buttonContainer}>
           <Button title="Pick an image from camera roll to edit picture" onPress={pickImage} disabled={uploading}/>
-         {uploading && <Text>Uploading...</Text>}
         </View>
+         {uploading && (
+          <View style={styles.uploadingContainer}
+          ><Text style={styles.uploadingText}>Uploading...</Text>
+          </View>)}
         <StatusBar style="auto" />
       </View>
     </View>
@@ -155,5 +153,20 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     top: 200,
-  }
+    alignSelf: 'center'
+  }, 
+  uploadingContainer: {
+    position: 'absolute',  
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',        
+    height: '100%',       
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  uploadingText: {
+    color: '#fff',        
+    fontSize: 20,         
+    fontFamily: 'Arial',  
+    
+  },
 });

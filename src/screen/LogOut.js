@@ -4,7 +4,7 @@ import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { signOut } from 'firebase/auth';
 
 
-const LogOut = ({ navigation }) => {
+const LogOut = ({ onLogout }) => {
     const [confirmVisible, setConfirmVisible] = useState(false);
 
     const handleLogOut = async () => {
@@ -16,7 +16,7 @@ const LogOut = ({ navigation }) => {
             const auth = FIREBASE_AUTH;
             await signOut(auth);
             setConfirmVisible(false);
-            navigation.navigate("Log");
+            onLogout(); 
         } catch (error) {
             console.error('Error occurred:' + error.message);
         }
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#9370db',
     },
     confirmationContainer: {
         backgroundColor: 'white',
