@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button, ScrollView, Switch } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SearchBar } from 'react-native-elements';
+import { FIRESTORE_DB } from '../../FirebaseConfig';
+import { addDoc, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { onSnapshot, collection } from 'firebase/firestore';
 
 export default function Event() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,16 +33,78 @@ export default function Event() {
     }
   };
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'users'));
+        const eventsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  
+        //separate events into incomplete and complete
+        const incomplete = eventsData.filter((event) => !event.complete);
+        const complete = eventsData.filter((event) => event.complete);
+  
+        setIncompleteEvents(incomplete);
+        setCompleteEvents(complete);
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Error fetching events: ', error);
+      }
+    };
+  
+    const unsubscribe = onSnapshot(collection(FIRESTORE_DB, 'users'), (snapshot) => {
+      const eventsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const incomplete = eventsData.filter((event) => !event.complete);
+      const complete = eventsData.filter((event) => event.complete);
+  
+      setIncompleteEvents(incomplete);
+      setCompleteEvents(complete);
+      setEvents(eventsData);
+    });
+  
+    return () => unsubscribe();
+  
+  }, []);
+
+  const saveEventToDatabase = async (event) => {
+    try {
+      const docRef = await addDoc(collection(FIRESTORE_DB, 'users'), event);
+      console.log('Event added with ID: ', docRef.id);
+    } catch (error) {
+      console.error('Error adding event: ', error);
+    }
+  };
+
+  const deleteEventFromDatabase = async (eventId) => {
+    try {
+      await deleteDoc(doc(FIRESTORE_DB, 'users', eventId));
+      console.log('Event deleted with ID: ', eventId);
+    } catch (error) {
+      console.error('Error deleting event: ', error);
+    }
+  };
+
+  const updateEventInDatabase = async (eventId, updatedEvent) => {
+    try {
+      await setDoc(doc(FIRESTORE_DB, 'users', eventId), updatedEvent);
+      console.log('Event updated with ID: ', eventId);
+    } catch (error) {
+      console.error('Error updating event: ', error);
+    }
+  };
+
   const createEvent = () => {
     if (eventInfo.title.trim() === '') {
       alert('Please enter a title for the event.');
       return;
     }
 
-    const newEvent = { ...eventInfo, id: incompleteEvents.length + 1 };
+    const newEvent = { ...eventInfo, id: incompleteEvents.length + 1, complete: false };
 
     // Add the new event to the incomplete list
     setIncompleteEvents([...incompleteEvents, newEvent]);
+
+    // Save the new event to the database
+    saveEventToDatabase(newEvent);
 
     // Sort incomplete events by due date
     const sortedIncompleteEvents = [...incompleteEvents, newEvent].sort((a, b) => a.dueDate - b.dueDate);
@@ -49,6 +114,24 @@ export default function Event() {
     setModalVisible(false);
   };
 
+  // Function to handle event deletion
+  const deleteEvent = (event) => {
+    // Check if the event is incomplete or complete and update the state accordingly
+    if (showIncomplete) {
+      const updatedIncompleteEvents = incompleteEvents.filter((e) => e.id !== event.id);
+      setIncompleteEvents(updatedIncompleteEvents);
+    } else {
+      const updatedCompleteEvents = completeEvents.filter((e) => e.id !== event.id);
+      setCompleteEvents(updatedCompleteEvents);
+    }
+
+    // Delete the event from the database
+    deleteEventFromDatabase(event.id);
+
+    setEventDetailsModalVisible(false);
+  };
+
+
   const markAsComplete = (event) => {
     // Remove from incomplete list
     const updatedIncompleteEvents = incompleteEvents.filter((e) => e.id !== event.id);
@@ -56,6 +139,9 @@ export default function Event() {
 
     // Add to complete list
     setCompleteEvents([...completeEvents, event]);
+
+     // Update the event in the database
+    updateEventInDatabase(event.id, { ...event, complete: true });
 
     setEventDetailsModalVisible(false);
   };
@@ -243,6 +329,7 @@ export default function Event() {
                   <Button title="Complete" onPress={() => markAsComplete(selectedEvent)} />
                 </View>
               )}
+              <Button title="Delete" onPress={() => deleteEvent(selectedEvent)} />
               <Button title="Close" onPress={() => setEventDetailsModalVisible(false)} />
             </View>
           )}
@@ -411,3 +498,4 @@ const styles = StyleSheet.create({
     color: 'black',
   },
 });
+
