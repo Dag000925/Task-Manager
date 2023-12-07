@@ -2,11 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button, ScrollView, Switch } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SearchBar } from 'react-native-elements';
-import { FIRESTORE_DB } from '../../FirebaseConfig';
-import { addDoc, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../../FirebaseConfig';
+import { updateDoc, getDocs, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore';
 import { onSnapshot, collection } from 'firebase/firestore';
 
 export default function Event() {
+
+  const currentUser = FIREBASE_AUTH.currentUser;
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (currentUser) {
+        const userRef = doc(FIRESTORE_DB, "users", currentUser.uid);
+  
+        // Optional: Real-time updates using onSnapshot
+        const unsubscribe = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const fetchedEvents = doc.data().events || [];
+            setEvents(fetchedEvents);
+            setIncompleteEvents(fetchedEvents.filter(event => !event.complete));
+            setCompleteEvents(fetchedEvents.filter(event => event.complete));
+          } else {
+            console.log("No such document!");
+          }
+        });
+        return () => unsubscribe();
+      }
+    };
+  
+    fetchEvents();
+  }, [currentUser]);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [events, setEvents] = useState([]);
   const [incompleteEvents, setIncompleteEvents] = useState([]);
@@ -28,83 +54,51 @@ export default function Event() {
   };
 
   const handleDateChange = (event, selectedDate) => {
-    if (selectedDate) {
-      setEventInfo({ ...eventInfo, dueDate: selectedDate });
-    }
-  };
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'users'));
-        const eventsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    if (selectedDate !== undefined) {
+      // Check if the selected date is the default date (Jan 01, 1970)
+      const isDefaultDate = selectedDate.getTime() === new Date(0).getTime();
   
-        //separate events into incomplete and complete
-        const incomplete = eventsData.filter((event) => !event.complete);
-        const complete = eventsData.filter((event) => event.complete);
-  
-        setIncompleteEvents(incomplete);
-        setCompleteEvents(complete);
-        setEvents(eventsData);
-      } catch (error) {
-        console.error('Error fetching events: ', error);
+      if (isDefaultDate) {
+        alert('Please select a valid date for the event.');
+      } else {
+        setEventInfo({ ...eventInfo, dueDate: selectedDate });
       }
-    };
-  
-    const unsubscribe = onSnapshot(collection(FIRESTORE_DB, 'users'), (snapshot) => {
-      const eventsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      const incomplete = eventsData.filter((event) => !event.complete);
-      const complete = eventsData.filter((event) => event.complete);
-  
-      setIncompleteEvents(incomplete);
-      setCompleteEvents(complete);
-      setEvents(eventsData);
-    });
-  
-    return () => unsubscribe();
-  
-  }, []);
-
-  const saveEventToDatabase = async (event) => {
-    try {
-      const docRef = await addDoc(collection(FIRESTORE_DB, 'users'), event);
-      console.log('Event added with ID: ', docRef.id);
-    } catch (error) {
-      console.error('Error adding event: ', error);
     }
   };
 
-  const deleteEventFromDatabase = async (eventId) => {
-    try {
-      await deleteDoc(doc(FIRESTORE_DB, 'users', eventId));
-      console.log('Event deleted with ID: ', eventId);
-    } catch (error) {
-      console.error('Error deleting event: ', error);
-    }
-  };
-
-  const updateEventInDatabase = async (eventId, updatedEvent) => {
-    try {
-      await setDoc(doc(FIRESTORE_DB, 'users', eventId), updatedEvent);
-      console.log('Event updated with ID: ', eventId);
-    } catch (error) {
-      console.error('Error updating event: ', error);
-    }
-  };
-
-  const createEvent = () => {
+  const createEvent = async () => {
     if (eventInfo.title.trim() === '') {
       alert('Please enter a title for the event.');
       return;
     }
-
+    if (!showDatePicker) {
+      alert('Please select a date for the event.');
+      return;
+    }
+    //const newEvent = { ...eventInfo, id: events.length + 1, complete: false };
     const newEvent = { ...eventInfo, id: incompleteEvents.length + 1, complete: false };
 
+    if (currentUser) {
+      try {
+        const userRef = doc(FIRESTORE_DB, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          events: arrayUnion(newEvent) 
+        });
+        console.log("Event added to the user's document");
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    } else {
+      console.log("No user is logged in");
+    }
+    
+
+    
     // Add the new event to the incomplete list
     setIncompleteEvents([...incompleteEvents, newEvent]);
 
     // Save the new event to the database
-    saveEventToDatabase(newEvent);
+    //saveEventToDatabase(newEvent);
 
     // Sort incomplete events by due date
     const sortedIncompleteEvents = [...incompleteEvents, newEvent].sort((a, b) => a.dueDate - b.dueDate);
@@ -112,6 +106,7 @@ export default function Event() {
 
     setEventInfo({ title: '', description: '', notes: '', dueDate: new Date() });
     setModalVisible(false);
+    setShowDatePicker(false);
   };
 
   // Function to handle event deletion
@@ -126,7 +121,7 @@ export default function Event() {
     }
 
     // Delete the event from the database
-    deleteEventFromDatabase(event.id);
+    //deleteEventFromDatabase(event.id);
 
     setEventDetailsModalVisible(false);
   };
@@ -141,7 +136,7 @@ export default function Event() {
     setCompleteEvents([...completeEvents, event]);
 
      // Update the event in the database
-    updateEventInDatabase(event.id, { ...event, complete: true });
+    //updateEventInDatabase(event.id, { ...event, complete: true });
 
     setEventDetailsModalVisible(false);
   };
@@ -321,8 +316,8 @@ export default function Event() {
               <Text style={styles.modalText}>{selectedEvent.description}</Text>
               <Text style={styles.modalText}>{selectedEvent.notes}</Text>
               <Text style={styles.modalText}>
-                Date: {selectedEvent.dueDate.toLocaleDateString()}{' '}
-                {selectedEvent.dueDate.toLocaleTimeString([], { hour: 'numeric', minute: 'numeric' })}
+              Date: {new Date(selectedEvent.dueDate).toLocaleDateString()}{' '}
+              {new Date(selectedEvent.dueDate).toLocaleTimeString([], { hour: 'numeric', minute: 'numeric' })}  
               </Text>
               {showIncomplete && (
                 <View style={styles.buttonContainer}>
@@ -498,4 +493,6 @@ const styles = StyleSheet.create({
     color: 'black',
   },
 });
+
+
 
