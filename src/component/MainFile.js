@@ -8,7 +8,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 import Course from '../screen/Course'
-import TaskView from '../screen/TaskView';
+import Task from '../screen/TaskView';
 import Event from '../screen/Event'
 
 import Profile from '../screen/Profile'
@@ -51,7 +51,7 @@ const DrawerNavigator = ({ onLogout }) => {
       />
       <Drawer.Screen
         name="Tasks"
-        component={TaskView}
+        component={Task}
         options={{ drawerIcon: CreateTaskIcon,
           drawerLabel: () => <CustomDrawerLabel label="Tasks" /> }}
       />

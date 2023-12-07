@@ -7,17 +7,13 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from '../../FirebaseConfig'; // Import Fi
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 
 
-export var categories = [
-  {'label': 'All', 'value': 'All'}
-];
+export var categories = [];
 
-//TODO - prompt for more details and customize course colors
+//TODO add states to implement editing
 const PromptCourse = ({ addCourse }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [inputs, setInputs] = useState({});
-  // const [startTime, setStart] = useState(new Date('12:00'));
-  // const [endTime, setEnd] = useState(new Date('0:00'));
 
   const set = (name, text) => {
     setInputs({
@@ -45,21 +41,16 @@ const PromptCourse = ({ addCourse }) => {
             placeholder="Course Title"
             onChangeText={(text) => set('title', text)}
           />
-          {/* <TextInput
+          <TextInput
             style={styles.textStyle}
             placeholder="Professor"
             onChangeText={(text) => set('professor', text)}
           />
-          <DateTimePicker
-            value={startTime}
-            mode='time'
-            onChange={setStart}
+          <TextInput 
+            style={styles.textStyle}
+            placeholder="Email"
+            onChangeText={(text) => set('email', text)}
           />
-          <DateTimePicker
-            value={endTime}
-            mode='time'
-            onChange={setEnd}
-  /> */}
           <Button
             style={[styles.button, styles.buttonClose]}
             title='Add'
@@ -88,10 +79,7 @@ const PromptCourse = ({ addCourse }) => {
 
 const CreateCourse = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
-  
-  //TODO - NOT YET IMPLEMENTED
-  //save current for  cancelling edits
-  const saveProps = props;
+
   return (
     <View>
       <Modal
@@ -155,7 +143,9 @@ export default function Course() {
     <View style={styles.container}>
       <View style={styles.centeredContent}>
         <StatusBar style="auto" />
-        <PromptCourse addCourse={addCourse} />
+        <View style={styles.prompt}>
+          <PromptCourse addCourse={addCourse} />
+        </View>
         <ScrollView>
           {courses.map((course, key) => (
             <CreateCourse
@@ -212,6 +202,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    marginVertical: '60%',
   },
   button: {
     borderRadius: 20,
@@ -239,5 +230,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
+  },
+  prompt: {
+    backgroundColor: '#585858',
+    borderRadius: 25,
+    marginHorizontal: '30%',
   },
 });
