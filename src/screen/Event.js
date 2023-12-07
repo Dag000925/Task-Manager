@@ -33,64 +33,64 @@ export default function Event() {
     }
   };
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'users'));
-        const eventsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  
-        //separate events into incomplete and complete
-        const incomplete = eventsData.filter((event) => !event.complete);
-        const complete = eventsData.filter((event) => event.complete);
-  
-        setIncompleteEvents(incomplete);
-        setCompleteEvents(complete);
-        setEvents(eventsData);
-      } catch (error) {
-        console.error('Error fetching events: ', error);
-      }
-    };
-  
-    const unsubscribe = onSnapshot(collection(FIRESTORE_DB, 'users'), (snapshot) => {
-      const eventsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      const incomplete = eventsData.filter((event) => !event.complete);
-      const complete = eventsData.filter((event) => event.complete);
-  
-      setIncompleteEvents(incomplete);
-      setCompleteEvents(complete);
-      setEvents(eventsData);
-    });
-  
-    return () => unsubscribe();
-  
-  }, []);
+  // useEffect(() => {
+  //   const fetchEvents = async () => {
+  //     try {
+  //       const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'users'));
+  //       const eventsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
-  const saveEventToDatabase = async (event) => {
-    try {
-      const docRef = await addDoc(collection(FIRESTORE_DB, 'users'), event);
-      console.log('Event added with ID: ', docRef.id);
-    } catch (error) {
-      console.error('Error adding event: ', error);
-    }
-  };
+  //       //separate events into incomplete and complete
+  //       const incomplete = eventsData.filter((event) => !event.complete);
+  //       const complete = eventsData.filter((event) => event.complete);
 
-  const deleteEventFromDatabase = async (eventId) => {
-    try {
-      await deleteDoc(doc(FIRESTORE_DB, 'users', eventId));
-      console.log('Event deleted with ID: ', eventId);
-    } catch (error) {
-      console.error('Error deleting event: ', error);
-    }
-  };
+  //       setIncompleteEvents(incomplete);
+  //       setCompleteEvents(complete);
+  //       setEvents(eventsData);
+  //     } catch (error) {
+  //       console.error('Error fetching events: ', error);
+  //     }
+  //   };
 
-  const updateEventInDatabase = async (eventId, updatedEvent) => {
-    try {
-      await setDoc(doc(FIRESTORE_DB, 'users', eventId), updatedEvent);
-      console.log('Event updated with ID: ', eventId);
-    } catch (error) {
-      console.error('Error updating event: ', error);
-    }
-  };
+  //   const unsubscribe = onSnapshot(collection(FIRESTORE_DB, 'users'), (snapshot) => {
+  //     const eventsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  //     const incomplete = eventsData.filter((event) => !event.complete);
+  //     const complete = eventsData.filter((event) => event.complete);
+
+  //     setIncompleteEvents(incomplete);
+  //     setCompleteEvents(complete);
+  //     setEvents(eventsData);
+  //   });
+
+  //   return () => unsubscribe();
+
+  // }, []);
+
+  // const saveEventToDatabase = async (event) => {
+  //   try {
+  //     const docRef = await addDoc(collection(FIRESTORE_DB, 'users'), event);
+  //     console.log('Event added with ID: ', docRef.id);
+  //   } catch (error) {
+  //     console.error('Error adding event: ', error);
+  //   }
+  // };
+
+  // const deleteEventFromDatabase = async (eventId) => {
+  //   try {
+  //     await deleteDoc(doc(FIRESTORE_DB, 'users', eventId));
+  //     console.log('Event deleted with ID: ', eventId);
+  //   } catch (error) {
+  //     console.error('Error deleting event: ', error);
+  //   }
+  // };
+
+  // const updateEventInDatabase = async (eventId, updatedEvent) => {
+  //   try {
+  //     await setDoc(doc(FIRESTORE_DB, 'users', eventId), updatedEvent);
+  //     console.log('Event updated with ID: ', eventId);
+  //   } catch (error) {
+  //     console.error('Error updating event: ', error);
+  //   }
+  // };
 
   const createEvent = () => {
     if (eventInfo.title.trim() === '') {
@@ -104,7 +104,7 @@ export default function Event() {
     setIncompleteEvents([...incompleteEvents, newEvent]);
 
     // Save the new event to the database
-    saveEventToDatabase(newEvent);
+    //[x]saveEventToDatabase(newEvent);
 
     // Sort incomplete events by due date
     const sortedIncompleteEvents = [...incompleteEvents, newEvent].sort((a, b) => a.dueDate - b.dueDate);
@@ -126,7 +126,7 @@ export default function Event() {
     }
 
     // Delete the event from the database
-    deleteEventFromDatabase(event.id);
+    // [x]deleteEventFromDatabase(event.id);
 
     setEventDetailsModalVisible(false);
   };
@@ -140,8 +140,8 @@ export default function Event() {
     // Add to complete list
     setCompleteEvents([...completeEvents, event]);
 
-     // Update the event in the database
-    updateEventInDatabase(event.id, { ...event, complete: true });
+    // Update the event in the database
+    //[x]updateEventInDatabase(event.id, { ...event, complete: true });
 
     setEventDetailsModalVisible(false);
   };
@@ -161,7 +161,7 @@ export default function Event() {
         }
       }
     };
-  
+
     const moveEventDown = () => {
       // Move the event down in the list
       // Check if the event is not already at the bottom
@@ -176,10 +176,10 @@ export default function Event() {
         }
       }
     };
-  
+
     const isTopEvent = showIncomplete && incompleteEvents.findIndex((event) => event.id === id) === 0;
     const isBottomEvent = showIncomplete && incompleteEvents.findIndex((event) => event.id === id) === incompleteEvents.length - 1;
-  
+
     return (
       <TouchableOpacity
         style={[styles.event, showIncomplete ? styles.incompleteEvent : styles.completeEvent]}
@@ -223,7 +223,7 @@ export default function Event() {
           borderTopWidth: 0,
         }}
         inputContainerStyle={{
-          height: 30,  
+          height: 30,
         }}
       />
       {/* Create Event Button */}
@@ -236,24 +236,24 @@ export default function Event() {
 
       {/* Event List */}
       <ScrollView style={styles.eventList}>
-      {showIncomplete
-        ? incompleteEvents
+        {showIncomplete
+          ? incompleteEvents
             .filter((event) => event.title.toLowerCase().includes(searchText.toLowerCase()))
             .map((event) => <EventItem key={event.id} {...event} />)
-        : completeEvents
+          : completeEvents
             .filter((event) => event.title.toLowerCase().includes(searchText.toLowerCase()))
             .map((event) => <EventItem key={event.id} {...event} />)
-    }
-    </ScrollView>
+        }
+      </ScrollView>
       {/* Incomplete/Complete Switch */}
       <View style={styles.switchContainer}>
-        <TouchableOpacity 
-          style={[styles.switchButton, showIncomplete && styles.selectedButton]} 
+        <TouchableOpacity
+          style={[styles.switchButton, showIncomplete && styles.selectedButton]}
           onPress={() => setShowIncomplete(true)}
         >
           <Text>Incomplete</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.switchButton, !showIncomplete && styles.selectedButton]}
           onPress={() => setShowIncomplete(false)}
         >
@@ -413,13 +413,13 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   title: {
-    color: 'black', 
-    fontSize: 18, 
+    color: 'black',
+    fontSize: 18,
     fontWeight: 'bold',
-     textAlign: 'center',
+    textAlign: 'center',
   },
   incompleteEvent: {
     backgroundColor: '#2196F3', //#dc143c 
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   eventText: {
-    color: 'black', 
+    color: 'black',
     fontSize: 16,
   },
   modalText: {
@@ -464,17 +464,17 @@ const styles = StyleSheet.create({
     transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
   },
   titleContainer: {
-    backgroundColor: 'white', 
-    borderRadius: 15, 
-    padding: 0, 
-    marginRight: 0, 
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 0,
+    marginRight: 0,
   },
   arrowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 15,  
-    overflow: 'hidden', 
+    borderRadius: 15,
+    overflow: 'hidden',
   },
   arrowButton: {
     backgroundColor: 'transparent',
