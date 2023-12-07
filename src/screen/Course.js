@@ -1,8 +1,11 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button, ScrollView, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import DateTimePicker from '@react-native-community/datetimepicker';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../../FirebaseConfig'; // Import Firebase config
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+
 
 export var categories = [
   {'label': 'All', 'value': 'All'}
@@ -118,11 +121,34 @@ const CreateCourse = (props) => {
 
 export default function Course() {
   const [courses, setCourse] = useState([]);
+  const user = FIREBASE_AUTH.currentUser;
+  useEffect(() => {
+    // Fetch courses when the component mounts
+    const fetchCourses = async () => {
+      if (user) {
+        const userRef = doc(FIRESTORE_DB, 'users', user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          setCourse(docSnap.data().courses || []);
+        }
+      }
+    };
 
-  const addCourse = (title) => {
+    fetchCourses();
+  }, []);
+
+
+  const addCourse = async (title) => {
     course = {'label': title, 'value': title};
     setCourse([...courses, course]);
     categories.push(course);
+
+    if (user) {
+      const userRef = doc(FIRESTORE_DB, 'users', user.uid);
+      await updateDoc(userRef, {
+        courses: arrayUnion(course)
+      });
+    }
   };
 
   return (

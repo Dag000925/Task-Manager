@@ -31,7 +31,10 @@ const SignUpScreen = ({ navigation, setUserLoggedIn }) => {
             await setDoc(userRef, {
               email, 
               lastName,
-              firstName
+              firstName,
+              //tasks: [],
+              courses: [],
+              events: [],
             });
 
             
