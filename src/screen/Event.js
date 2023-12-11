@@ -97,8 +97,6 @@ export default function Event() {
     // Add the new event to the incomplete list
     setIncompleteEvents([...incompleteEvents, newEvent]);
 
-    // Save the new event to the database
-    saveEventToDatabase(newEvent);
 
     // Sort incomplete events by due date
     const sortedIncompleteEvents = [...incompleteEvents, newEvent].sort((a, b) => a.dueDate - b.dueDate);
@@ -119,10 +117,6 @@ export default function Event() {
       const updatedCompleteEvents = completeEvents.filter((e) => e.id !== event.id);
       setCompleteEvents(updatedCompleteEvents);
     }
-
-    // Delete the event from the database
-    deleteEventFromDatabase(event.id);
-
     setEventDetailsModalVisible(false);
   };
 
@@ -134,9 +128,6 @@ export default function Event() {
 
     // Add to complete list
     setCompleteEvents([...completeEvents, event]);
-
-     // Update the event in the database
-    updateEventInDatabase(event.id, { ...event, complete: true });
 
     setEventDetailsModalVisible(false);
   };

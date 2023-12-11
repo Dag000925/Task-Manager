@@ -33,8 +33,8 @@ const SignUpScreen = ({ navigation, setUserLoggedIn }) => {
               lastName,
               firstName,
               //tasks: [],
-              courses: [],
-              events: [],
+              //courses: [],
+              //events: [],
             });
 
             
